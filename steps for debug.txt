@@ -1,0 +1,15 @@
+How to enable debugging for rimworld
+1. get the version of unity used to build this version of rimworld
+2. extract/copy UnityPlayer.dll, WindowsPlayer.exe and WinPix???.dll from the unity folder's 64bit dev variation
+3. paste the 3 files into rimworld directory, backing up originals first. 
+4. edit boot.config in rimworld/RimWorldWin64_Data and add the lines 'wait-for-managed-debugger=1' and 'player-connection-debug=1'
+These steps will allow you you set breakpoints in VS with Unity development tools for your own mod, but will not let you create breakpoints in decompiled source (Test this). 
+The following steps will enable setting breakpoints and debugging compiled rimworld code as well:
+5. Decompile and/or generate a pdb for Assembly-CSharp.dll using dotpeek. Haven't had luck with other tools.
+6. place the generated pdb alongside the dll, as well as a file name Assembly-CSharp.ini, with the contents:
+
+[.NET Framework Debugging Control]
+GenerateTrackingInfo=1
+AllowOptimize=0
+
+7. set up Visual studio to handle these symbols properly - should just work, but may need to load symbols during debug using the Debug > Windows > Modules screen

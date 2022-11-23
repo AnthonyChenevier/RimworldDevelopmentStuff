@@ -1,0 +1,8 @@
+E:\Code\Rimworld Mods\RWM_ProjectTemplate\RWM_ProjectTemplate\obj\Debug\_EmptyResource.resources
+E:\Code\Rimworld Mods\RWM_ProjectTemplate\RWM_ProjectTemplate\obj\Debug\RWM_ProjectTemplate.csproj.GenerateResource.cache
+E:\Code\Rimworld Mods\RWM_ProjectTemplate\RWM_ProjectTemplate\obj\Debug\RWM_ProjectTemplate.csproj.CoreCompileInputs.cache
+E:\Code\Rimworld Mods\RWM_ProjectTemplate\RWM_ProjectTemplate\obj\Debug\CSharp\1033\RWM_ProjectTemplate.zip
+E:\Code\Rimworld Mods\RWM_ProjectTemplate\RWM_ProjectTemplate\obj\Debug\RWM_ProjectTemplate.dll
+E:\Code\Rimworld Mods\RWM_ProjectTemplate\RWM_ProjectTemplate\obj\Debug\RWM_ProjectTemplate.pdb
+E:\Code\Rimworld Mods\RWM_ProjectTemplate\RWM_ProjectTemplate\bin\Debug\ProjectTemplates\CSharp\1033\RWM_ProjectTemplate.zip
+E:\Code\Rimworld Mods\RWM_ProjectTemplate\RWM_ProjectTemplate\obj\Debug\RWM_ProjectTemplate.csprojAssemblyReference.cache
