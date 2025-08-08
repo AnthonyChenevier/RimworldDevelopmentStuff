@@ -12,11 +12,11 @@ IF "%RIMWORLD_INSTALL_DIR%"=="" (
 	ECHO No Arguments provided. Using defaults...
 	SET RIMWORLD_INSTALL_DIR=C:\steam\steamapps\common\Rimworld
 	SET RIMWORLD_BACKUP_DIR=E:\Rimworld_Backup
-	SET RIMWORLD_UNITY_VERSION=2019.4.30f1
+	SET RIMWORLD_UNITY_VERSION=2022.3.35f1
 )
 
-SET UNITY_INSTALL_DIR=C:\Program Files\Unity\Hub\Editor\%RIMWORLD_UNITY_VERSION%\Editor
-SET WINDOWS_PLAYER_DIR=%UNITY_INSTALL_DIR%\Data\PlaybackEngines\windowsstandalonesupport\Variations\win64_development_mono
+SET UNITY_INSTALL_DIR=E:\Unity\%RIMWORLD_UNITY_VERSION%\Editor
+SET WINDOWS_PLAYER_DIR=%UNITY_INSTALL_DIR%\Data\PlaybackEngines\windowsstandalonesupport\Variations\win64_player_development_mono
 SET EXE_PATH=%WINDOWS_PLAYER_DIR%\WindowsPlayer.exe
 SET UNITYPLAYER_DLL_PATH=%WINDOWS_PLAYER_DIR%\UnityPlayer.dll
 SET WINPIX_DLL_PATH=%WINDOWS_PLAYER_DIR%\WinPixEventRuntime.dll
@@ -71,13 +71,28 @@ GOTO MENU
 
 :DBG
 ECHO Modifying boot.config
+SET FOUND_MANAGED_DEBUG=0
+SET FOUND_PLAYER_CONNECTION=0
 RENAME %BOOT_CONFIG_FOLDER%\boot.config boot.tmp
 FOR /F %%I IN (%BOOT_CONFIG_FOLDER%\boot.tmp) DO (
 	SET foo=%%I
-	IF !foo!==wait-for-managed-debugger=0 (SET foo=wait-for-managed-debugger=1)
-	IF !foo!==player-connection-debug=0 (SET foo=player-connection-debug=1)
+	IF !foo!==wait-for-managed-debugger=0 (
+		SET foo=wait-for-managed-debugger=1 
+		SET FOUND_MANAGED_DEBUG=1
+	)
+	IF !foo!==player-connection-debug=0 (
+		SET foo=player-connection-debug=1
+		SET FOUND_PLAYER_CONNECTION=1
+	)
 	ECHO !foo! >> %BOOT_CONFIG_FOLDER%\boot.config
 ) 
+IF %FOUND_MANAGED_DEBUG%==0  (
+	ECHO wait-for-managed-debugger=1 >> %BOOT_CONFIG_FOLDER%\boot.config
+)
+IF %FOUND_PLAYER_CONNECTION%==0 (
+	ECHO player-connection-debug=1 >> %BOOT_CONFIG_FOLDER%\boot.config
+)
+
 DEL %BOOT_CONFIG_FOLDER%\boot.tmp
 ECHO Setting up debugging files for selected Rimworld install...
 
@@ -92,23 +107,28 @@ COPY "%WINPIX_DLL_PATH%" "%RIMWORLD_INSTALL_DIR%"
 GOTO MENU
 
 :NML
-ECHO Modifying boot.config
-RENAME %BOOT_CONFIG_FOLDER%\boot.config boot.tmp
-FOR /F %%I IN (%BOOT_CONFIG_FOLDER%\boot.tmp) DO (
-	SET foo=%%I
-	IF !foo!==wait-for-managed-debugger=1 (SET foo=wait-for-managed-debugger=0)
-	IF !foo!==player-connection-debug=1 (SET foo=player-connection-debug=0)
-	ECHO !foo! >> %BOOT_CONFIG_FOLDER%\boot.config
-) 
-DEL %BOOT_CONFIG_FOLDER%\boot.tmp
-ECHO Removing debugging files for selected Rimworld install...
+IF EXIST %RIMWORLD_INSTALL_DIR%\WinPixEventRuntime.dll (
+	ECHO Modifying boot.config
+	RENAME %BOOT_CONFIG_FOLDER%\boot.config boot.tmp
+	FOR /F %%I IN (%BOOT_CONFIG_FOLDER%\boot.tmp) DO (
+		SET foo=%%I
+		IF !foo!==wait-for-managed-debugger=1 (SET foo=wait-for-managed-debugger=0)
+		IF !foo!==player-connection-debug=1 (SET foo=player-connection-debug=0)
+		ECHO !foo! >> %BOOT_CONFIG_FOLDER%\boot.config
+	) 
+	DEL %BOOT_CONFIG_FOLDER%\boot.tmp
+	ECHO Removing debugging files for selected Rimworld install...
 
-DEL %RIMWORLD_INSTALL_DIR%\RimWorldWin64.exe
-DEL %RIMWORLD_INSTALL_DIR%\UnityPlayer.dll
-DEL %RIMWORLD_INSTALL_DIR%\WinPixEventRuntime.dll
+	DEL %RIMWORLD_INSTALL_DIR%\RimWorldWin64.exe
+	DEL %RIMWORLD_INSTALL_DIR%\UnityPlayer.dll
+	DEL %RIMWORLD_INSTALL_DIR%\WinPixEventRuntime.dll
 
-RENAME "%RIMWORLD_INSTALL_DIR%\RimWorldWin64.exe.original" "RimWorldWin64.exe"
-RENAME "%RIMWORLD_INSTALL_DIR%\UnityPlayer.dll.original" "UnityPlayer.dll"
+	RENAME "%RIMWORLD_INSTALL_DIR%\RimWorldWin64.exe.original" "RimWorldWin64.exe"
+	RENAME "%RIMWORLD_INSTALL_DIR%\UnityPlayer.dll.original" "UnityPlayer.dll"
+
+) ELSE (
+	ECHO Could not find debugging file "WinPixEventRuntime.dll" which means RW is in normal mode already. Skipping...
+)
 GOTO MENU
 
 
